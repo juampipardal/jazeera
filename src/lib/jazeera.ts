@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import express, { Application } from "express";
-import { RouteDefinition } from "./models/route-definition.interface";
+import express, { Application, NextFunction, Request, Response } from "express";
+import { ParamTypes, RouteDefinition, RouteParamsType } from "./models/route-definition.interface";
 
 export class JazeeraApp {
 
@@ -29,17 +29,9 @@ export class JazeeraApp {
                 const errorMiddleware = Reflect.getMetadata(route.methodName, instance.__proto__)?.errorMiddleware || function(req,res,next) {next()};
 
                 this.app[route.requestMethod](prefix + route.path, routeMiddlewares, (req: express.Request, res: express.Response, next: express.NextFunction) => {   
+                    
                     // Execute our method for this path and pass our express request and response object.
-                    let valueToReturn;
-                    if (route.reqParams.length > 0) {
-                        let newArgs: any[] = route.reqParams.map(arg => req.params[arg]);
-                        newArgs.push(req);  
-                        newArgs.push(res);
-                        newArgs.push(next);
-                        valueToReturn = instance[route.methodName].apply(this, newArgs);
-                    } else {
-                        valueToReturn = instance[route.methodName](req, res, next);
-                    }
+                    let valueToReturn = instance[route.methodName].apply(this, this.getMethodArgs(route.params, req, res, next));
 
                     if (valueToReturn instanceof Promise) {
                         valueToReturn.then(val => {
@@ -56,5 +48,25 @@ export class JazeeraApp {
            });
         }
     )};
+
+
+    private getMethodArgs(params: RouteParamsType[], req: Request, res: Express.Response, next: NextFunction) {
+        let methodArguments = [];
+        
+        if (params.length > 0) {            
+            methodArguments = 
+                params.sort((a, b) => a.index - b.index)
+                .map(param => { // TODO doubleDispatch
+                    if (param.type === 'reqParam') {
+                        return param.value ? req.params[param.value] : req.params;
+                    }
+                    if (param.type === 'bodyParam') {
+                        return param.value ? req.body[param.value] : req.body;
+                    }
+                })
+        }
+        methodArguments.push(req, res, next);
+        return methodArguments;
+    }
 
 }

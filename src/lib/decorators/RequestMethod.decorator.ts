@@ -1,4 +1,4 @@
-import { RequestMethod, RouteDefinition } from '../models/route-definition.interface';
+import { RequestMethod, RouteDefinition, RouteParamsType } from '../models/route-definition.interface';
 
 export const Get = (path: string): MethodDecorator => {
   // `target` equals our class, `propertyKey` equals our decorated method name
@@ -44,14 +44,14 @@ function setRoute(path: string, method: RequestMethod, target, propertyKey: stri
   // Get the routes stored so far, extend it by the new route and re-set the metadata.
   const routes =  Reflect.getMetadata('routes', target.constructor) as Array<RouteDefinition>;
 
-  const routeParams: string[] = Reflect.getOwnMetadata(propertyKey, target)?.params;
+  const routeParams: RouteParamsType[] = Reflect.getOwnMetadata(propertyKey, target)?.params;
 
   routes.push({
     requestMethod: method,
     path,
     methodName: propertyKey,
     middlewares: [],
-    reqParams: routeParams?.reverse() || []
+    params: routeParams?.reverse() || []
   });
   
   Reflect.defineMetadata('routes', routes, target.constructor);
