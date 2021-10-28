@@ -1,9 +1,10 @@
 import { JazeeraApp } from "./src/lib/jazeera";
-import { Controller, ReqParam, Middleware, OnError, Delete, Get, Options, Post, Put } from "./src/lib/decorators";
+import { Controller, ReqParam, Middleware, OnError, Delete, Get, Options, Post, Put, Patch, Module } from "./src/lib/decorators";
 
 export {
     JazeeraApp,
     Controller,
+    Module,
     ReqParam,
     Middleware,
     OnError,
@@ -11,5 +12,6 @@ export {
     Get,
     Options,
     Post,
-    Put
+    Put,
+    Patch
 }
