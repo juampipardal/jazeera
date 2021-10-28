@@ -2,7 +2,7 @@ import { ErrorRequestHandler, RequestHandler } from "express";
 
 export type Middleware = RequestHandler;
 export type ErrorMiddleware = ErrorRequestHandler;
-export type RequestMethod =  'get' | 'post' | 'delete' | 'options' | 'put';
+export type RequestMethod =  'get' | 'post' | 'delete' | 'options' | 'put' | 'patch';
 export type ParamTypes = 'reqParam' | 'bodyParam';
 
 export interface RouteParamsType {

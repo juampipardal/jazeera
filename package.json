@@ -5,8 +5,9 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "tsc"
+    "compile": "tsc",
+    "clean": "rm -rf dist",
+    "buildpackage": "npm run clean && npm run compile"
   },
   "author": "Juan Pablo Pardal",
   "dependencies": {

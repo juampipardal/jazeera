@@ -35,6 +35,13 @@ export const Put = (path: string): MethodDecorator => {
   };
 }
 
+export const Patch = (path: string): MethodDecorator => {
+  // `target` equals our class, `propertyKey` equals our decorated method name
+  return (target, propertyKey: string, descriptor: PropertyDescriptor): void => {
+    setRoute(path, 'patch', target, propertyKey, descriptor);
+  };
+}
+
 
 function setRoute(path: string, method: RequestMethod, target, propertyKey: string, descriptor: PropertyDescriptor) {
   if (! Reflect.hasMetadata('routes', target.constructor)) {
